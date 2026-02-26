@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B-Rating 综合评分系统</title>
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.85);
+            --accent: #ff2d55;
+        }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 25%, #fad0c4 50%, #fbc2eb 75%, #a18cd1 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            max-width: 500px;
+            width: 100%;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        h1 { text-align: center; color: #444; margin-top: 0; }
+        .section-title { font-size: 1.1em; font-weight: bold; color: var(--accent); margin: 20px 0 10px; border-left: 4px solid var(--accent); padding-left: 10px; }
+        
+        .input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        input, select { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ddd; outline: none; }
+        input:focus { border-color: var(--accent); }
+        
+        button { cursor: pointer; border: none; transition: 0.3s; }
+        .btn-main { width: 100%; background: var(--accent); color: white; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 1.1em; margin-top: 20px; }
+        .btn-add { background: #333; color: white; padding: 0 15px; border-radius: 8px; }
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .song-list { background: rgba(0,0,0,0.05); padding: 10px; border-radius: 10px; max-height: 150px; overflow-y: auto; font-size: 0.85em; margin-bottom: 5px; }
+        .song-item { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+
+        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; font-size: 0.8em; text-align: center; }
+        .grid-header { font-weight: bold; color: #666; }
+
+        #result-box { margin-top: 25px; text-align: center; display: none; padding: 20px; border-radius: 15px; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .rating-num { font-size: 3em; font-weight: 800; color: var(--accent); line-height: 1; }
+        .rank-title { font-size: 1.4em; font-weight: bold; margin: 10px 0; background: linear-gradient(90deg, #ff2d55, #6200ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>B-Rating 评分系统</h1>
+    
+    <div class="section-title">1. 实力成绩 (Top 30)</div>
+    <div class="input-row">
+        <input type="number" id="lv" placeholder="等级" min="1" max="31">
+        <select id="status">
+            <option value="1.04">AP</option>
+            <option value="1.01" selected>FC</option>
+            <option value="0.90">Clear</option>
+        </select>
+        <input type="number" id="qty" placeholder="数量" min="1" style="flex:0.5">
+        <button class="btn-add" onclick="addSongs()">添加</button>
+    </div>
+    <div class="song-list" id="songList"></div>
+    <button onclick="songs=[];updateList()" style="font-size: 0.7em; background:none; color:#999; border:none; text-decoration: underline;">重置列表</button>
+
+    <div class="section-title">2. 全难度达成统计 (G)</div>
+    <div class="grid-inputs">
+        <div class="grid-header">难度</div><div class="grid-header">FC数量</div><div class="grid-header">AP数量</div>
+        
+        <div>EX/SP</div>
+        <input type="number" id="ex-fc" placeholder="0">
+        <input type="number" id="ex-ap" placeholder="0">
+        
+        <div>Hard</div>
+        <input type="number" id="hd-fc" placeholder="0">
+        <input type="number" id="hd-ap" placeholder="0">
+        
+        <div>Normal</div>
+        <input type="number" id="nm-fc" placeholder="0">
+        <input type="number" id="nm-ap" placeholder="0">
+        
+        <div>Easy</div>
+        <input type="number" id="ez-fc" placeholder="0">
+        <input type="number" id="ez-ap" placeholder="0">
+    </div>
+
+    <button class="btn-main" onclick="calculate()">即刻计算 Rating</button>
+
+    <div id="result-box">
+        <div style="color: #888; font-size: 0.9em;">您的综合实力评估为</div>
+        <div class="rating-num" id="res-val">0.00</div>
+        <div class="rank-title" id="res-rank">-</div>
+        <div id="res-detail" style="font-size: 0.8em; color: #999;"></div>
+    </div>
+</div>
+
+<script>
+    let songs = [];
+
+    function addSongs() {
+        const lv = parseFloat(document.getElementById('lv').value);
+        const status = parseFloat(document.getElementById('status').value);
+        const qty = parseInt(document.getElementById('qty').value) || 1;
+        if (!lv) return;
+        const statusMap = {"1.04": "AP", "1.01": "FC", "0.90": "Clear"};
+        for(let i=0; i<qty; i++) {
+            songs.push({ lv, r: lv * status, txt: statusMap[status] });
+        }
+        updateList();
+    }
+
+    function updateList() {
+        songs.sort((a,b) => b.r - a.r);
+        const list = document.getElementById('songList');
+        list.innerHTML = songs.map((s, i) => `
+            <div class="song-item" style="${i<30?'':'opacity:0.4'}">
+                <span>#${i+1} ${s.lv} (${s.txt})</span>
+                <span>${s.r.toFixed(2)}</span>
+            </div>
+        `).join('') || '<div style="text-align:center; color:#999">暂无数据</div>';
+    }
+
+    function calculate() {
+        // 1. P分
+        const top30 = songs.slice(0, 30);
+        if(top30.length === 0) return alert("请先录入成绩");
+        const p = top30.reduce((a, b) => a + b.r, 0) / 30;
+
+        // 2. G分
+        const getVal = id => parseInt(document.getElementById(id).value) || 0;
+        const gPoints = 
+            (getVal('ex-fc') * 5 + getVal('ex-ap') * 2) +
+            (getVal('hd-fc') * 1 + getVal('hd-ap') * 0.5) +
+            (getVal('nm-fc') * 0.5 + getVal('nm-ap') * 0.2) +
+            (getVal('ez-fc') * 0.2 + getVal('ez-ap') * 0.1);
+        const g = gPoints / 4000;
+
+        const total = p + g;
+        showResult(total, p, g);
+    }
+
+    function showResult(val, p, g) {
+        const box = document.getElementById('result-box');
+        const resVal = document.getElementById('res-val');
+        const resRank = document.getElementById('res-rank');
+        const resDetail = document.getElementById('res-detail');
+
+        box.style.display = 'block';
+        resVal.innerText = val.toFixed(2);
+        resDetail.innerText = `基础实力分(P): ${p.toFixed(2)} | 综合深度分(G): ${g.toFixed(3)}`;
+
+        // 分档称号
+        let rank = "";
+        if (val >= 31) rank = "获得称号：震古烁今 · 传说中的龙福";
+        else if (val >= 30) rank = "获得称号：登峰造极";
+        else if (val >= 28) rank = "获得称号：出神入化";
+        else if (val >= 26.5) rank = "获得称号：炉火纯青";
+        else if (val >= 25) rank = "获得称号：游刃有余";
+        else if (val >= 20) rank = "获得称号：略有小成";
+        else rank = "获得称号：初出茅庐";
+        
+        resRank.innerText = rank;
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
