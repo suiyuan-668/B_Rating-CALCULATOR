@@ -115,11 +115,12 @@
         $$Total\ Rating = \text{Min} \left( \frac{\sum \text{Best 30 Scores}}{30} + \frac{pt}{pt + 2500}, \ 31.0 \right)$$
     </p>
 <p align="left">1. 基础实力的量化 (P)<br>
-• 计算：取你表现最好的30场成绩（等级  判定系数），计算其算术平均值。<br>
-• 系数：AP (1.04)、FC (1.02)、Clear (0.90)。<br>
+• 计算：取你表现最好的30场成绩（与歌曲等级和判定系数挂钩），计算其算术平均值。<br>
+• 系数：AP (1.04)、FC (1.01)、Clear (0.90)。<br>
 • 作用：决定了你评分的"大区段"（例如26分段或28分段）。<br>
 2. 综合深度的补强 (G)<br>
-• 点数化 (pt)：统计全难度的 FC 和 AP 数量。EX 的权重最高 (3+3pt)，Easy 最低 (0.2+0.2pt)。<br>
+• 点数化 (pt)：统计全难度的 FC 和 AP 数量：EXPERT/SPECIAL(3+3pt), Hard(1+1pt), Normal(0.5+0.5pt), Easy(0.2+0.2pt)
+<br>
 • 非线性增长：引入收益递减公式，防止G分喧宾夺主。<br>
 • 作用：在你的实力基础上进行"精修"，反映出你对游戏内容的完成度。<br>
 <br>
@@ -131,7 +132,7 @@
 <div class="container">
     <div class="panel">
         <section class="input-group">
-            <h2>成绩图的玩家信息 & 样式定制（非必需）</h2>
+            <h2>1.成绩图的玩家信息 & 样式定制（非必需）</h2>
             <div class="row">
                 <input type="text" id="p-name" placeholder="输入玩家名称" maxlength="15">
                 <input type="color" id="p-color" value="#444444" title="修改名字显示的颜色" style="flex:0.2; height:38px; padding:2px;">
@@ -148,12 +149,12 @@
         </section>
 
         <section class="input-group">
-            <h2>基础实力分(B30)成绩计算</h2>
+            <h2>2.基础实力分(B30)成绩计算</h2>
             <div class="row">
                 <input type="number" id="in-lv" placeholder="等级" style="flex:0.5">
                 <select id="in-type">
                     <option value="1.04">ALL PERFECT (1.04)</option>
-                    <option value="1.02">FULL COMBO (1.02)</option>
+                    <option value="1.01">FULL COMBO (1.01)</option>
                     <option value="0.90">CLEAR (0.90)</option>
                 </select>
                 <input type="number" id="in-qty" value="1" style="flex:0.3">
@@ -164,7 +165,7 @@
         </section>
 
         <section class="input-group">
-            <h2>综合深度分(G) 计算</h2>
+            <h2>3.综合深度分(G) 计算</h2>
             <table style="width:100%; font-size:12px; text-align: left;">
                 <tr><th>难度</th><th>FC总数(含AP)</th><th>其中AP数</th></tr>
                 <tr><td>EXPERT/SPECIAL</td><td><input type="number" id="g-ex-fc" value="0"></td><td><input type="number" id="g-ex-ap" value="0"></td></tr>
@@ -195,7 +196,7 @@
                 <div id="out-name" class="res-name">玩家名：UNKNOWN</div>
                 <div id="out-total" class="res-total">0.00</div>
                 <div id="out-rank" class="res-rank" style="background: #eee;">获得称号：---</div>
-                <div id="out-breakdown" class="res-breakdown">Power: 0.00 | Grade: 0.000</div>
+                <div id="out-breakdown" class="res-breakdown">基础分: 0.00 | 深度分: 0.000</div>
                 <div class="chart-box">
                     <div class="chart-note">📊 Rating 总分变化趋势图</div>
                     <canvas id="trendChart"></canvas>
@@ -263,6 +264,7 @@
         autoSave();
     }
 
+
     function renderB30() {
         const container = document.getElementById('b30-list');
         if (b30.length === 0) { container.innerHTML = "暂无数据"; return; }
@@ -317,7 +319,7 @@
 
     function getRank(v) {
         if (v >= 30.5) return { text: "震古烁今·传奇龙福", bg: "#000", color: "#fdbb2d" };
-        if (v >= 30.0) return { text: "登峰造极", bg: "#fdbb2d", color: "#fff" };
+        if (v >= 29.5) return { text: "登峰造极", bg: "#fdbb2d", color: "#fff" };
         if (v >= 28.0) return { text: "出神入化", bg: "#ff2d55", color: "#fff" };
         if (v >= 26.0) return { text: "炉火纯青", bg: "#5856d6", color: "#fff" };
         if (v >= 24.0) return { text: "游刃有余", bg: "#34c759", color: "#fff" };
