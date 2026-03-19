@@ -2,7 +2,7 @@
 
 ![Version](https://img.shields.io/badge/Version-27.3-ff2d55) ![License](https://img.shields.io/badge/License-MIT-green) ![Platform](https://img.shields.io/badge/Platform-Web-blue)
 
-**B-Rating** 是一款专为《BanG Dream!少女乐团派对》玩家设计的综合实力评分工具。不同于传统的单一等级计算，它引入了**基础实力 (P)** 与 **综合深度 (G)** 的双维度评价体系，旨在更客观地反映玩家的真实水平与游戏完成度。
+**B-Rating** 是一款专为音乐游戏《BanG Dream!少女乐团派对》玩家设计的综合实力评分工具。不同于传统的单一等级计算，它引入了**基础实力 (P)** 与 **综合深度 (G)** 的双维度评价体系，旨在更客观地反映玩家的真实水平与游戏完成度。
 
 ---
 
@@ -68,3 +68,6 @@ $$Total\ Rating = \text{Min} \left( \frac{\sum \text{Best 30 Scores}}{30} + \fra
 ---
 
 > **作者**：Designed by [Suiyuan](https://space.bilibili.com/471454900)。
+> **附言**：感谢参与了测试的网友们，并感谢你们提供的宝贵意见，如有不完善的地方还请多多包涵，祝你们游戏愉快！
+> **“Google Gemini AI 对本项目起到一定辅助作用”**
+> 
