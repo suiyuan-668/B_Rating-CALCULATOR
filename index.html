@@ -2,7 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-Frame-Options" content="deny">
     <title>B-Rating 综合评分计算器</title>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -97,6 +98,36 @@
 .author-footer a:hover {
     color: #ff4d4f;
 }
+/* --- 移动端响应式优化 --- */
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    .container { display: flex; flex-direction: column; width: 100% !important; gap: 15px; }
+    .panel { width: 100% !important; padding: 15px !important; }
+
+    #capture-area {
+        width: 100% !important;
+        max-width: 480px; 
+        min-height: auto !important;
+        aspect-ratio: 480 / 850;
+        border-width: 8px !important;
+        margin: 0 auto;
+    }
+
+    .res-total { font-size: 60px !important; }
+
+    .input-group .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .input-group .row input, .input-group .row select { width: 100%; flex: none !important; height: 40px; }
+    .btn-add { grid-column: span 2; margin-top: 5px; height: 45px; }
+
+    section table { display: block; overflow-x: auto; width: 100%; }
+    section table input { width: 80px !important; padding: 5px; }
+
+    .history-pane { -webkit-overflow-scrolling: touch; }
+    .hist-list { min-width: 600px; }
+    .logic-intro { font-size: 11px; padding: 12px; word-break: break-all; }
+
+    .author-footer { position: relative; text-align: center; margin-top: 20px; bottom: 0; right: 0; }
+}
     </style>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
@@ -124,7 +155,8 @@
 • 非线性增长：引入收益递减公式，防止G分喧宾夺主。<br>
 • 作用：在你的实力基础上进行"精修"，反映出你对游戏内容的完成度。<br>
 <br>
-<p align="right">注：所有数据只会存储在您的设备端，且清除浏览器缓存时有可能导致历史数据丢失，如需长期保存记录或跨设备转移使用请定期导出数据备份。</p>
+<p align="right">注：该评分机制非官方，仅代表个人拙见，受社区玩家见解区别、歌曲具体定级多样性等因素影响，故无法完全准确代表一个玩家的实力水平（也不一定等于底力水平），如有疑惑或发现bug请点击网页下方链接咨询作者<br>
+且本网站所有数据只会存储在您的设备端，清除浏览器缓存时有可能导致历史数据丢失，如需长期保存记录或跨设备转移使用请定期导出数据备份</p>
 </p>
     </div>
 </header>
@@ -132,10 +164,10 @@
 <div class="container">
     <div class="panel">
         <section class="input-group">
-            <h2>1.成绩图的玩家信息 & 样式定制（非必需）</h2>
+            <h2>1.成绩图的玩家信息 & 样式定制</h2>
             <div class="row">
-                <input type="text" id="p-name" placeholder="输入玩家名称" maxlength="15">
-                <input type="color" id="p-color" value="#444444" title="修改名字显示的颜色" style="flex:0.2; height:38px; padding:2px;">
+                <input type="text" id="p-name" placeholder="输入玩家名称" maxlength="15" oninput="autoSave()">
+                <input type="color" id="p-color" value="#444444" title="修改名字显示的颜色" style="flex:0.2; height:38px; padding:2px;" oninput="autoSave()">
             </div>
             <div class="row">
                 <label style="font-size: 12px;">背景上传：</label>
@@ -168,10 +200,10 @@
             <h2>3.综合深度分(G) 计算</h2>
             <table style="width:100%; font-size:12px; text-align: left;">
                 <tr><th>难度</th><th>FC总数(含AP)</th><th>其中AP数</th></tr>
-                <tr><td>EXPERT/SPECIAL</td><td><input type="number" id="g-ex-fc" value="0"></td><td><input type="number" id="g-ex-ap" value="0"></td></tr>
-                <tr><td>HARD</td><td><input type="number" id="g-hd-fc" value="0"></td><td><input type="number" id="g-hd-ap" value="0"></td></tr>
-                <tr><td>NORMAL</td><td><input type="number" id="g-nm-fc" value="0"></td><td><input type="number" id="g-nm-ap" value="0"></td></tr>
-                <tr><td>EASY</td><td><input type="number" id="g-es-fc" value="0"></td><td><input type="number" id="g-es-ap" value="0"></td></tr>
+                <tr><td>EXPERT/SP</td><td><input type="number" id="g-ex-fc" value="0" oninput="autoSave()"></td><td><input type="number" id="g-ex-ap" value="0" oninput="autoSave()"></td></tr>
+                <tr><td>HARD</td><td><input type="number" id="g-hd-fc" value="0" oninput="autoSave()"></td><td><input type="number" id="g-hd-ap" value="0" oninput="autoSave()"></td></tr>
+                <tr><td>NORMAL</td><td><input type="number" id="g-nm-fc" value="0" oninput="autoSave()"></td><td><input type="number" id="g-nm-ap" value="0" oninput="autoSave()"></td></tr>
+                <tr><td>EASY</td><td><input type="number" id="g-es-fc" value="0" oninput="autoSave()"></td><td><input type="number" id="g-es-ap" value="0" oninput="autoSave()"></td></tr>
             </table>
         </section>
 
@@ -196,7 +228,7 @@
                 <div id="out-name" class="res-name">玩家名：UNKNOWN</div>
                 <div id="out-total" class="res-total">0.00</div>
                 <div id="out-rank" class="res-rank" style="background: #eee;">获得称号：---</div>
-                <div id="out-breakdown" class="res-breakdown">基础分: 0.00 | 深度分: 0.000</div>
+                <div id="out-breakdown" class="res-breakdown">基础实力分: 0.00 | 综合深度分: 0.000</div>
                 <div class="chart-box">
                     <div class="chart-note">📊 Rating 总分变化趋势图</div>
                     <canvas id="trendChart"></canvas>
@@ -208,11 +240,11 @@
     </div>
 
     <div class="full-width panel history-pane">
-        <h2>历史记录 (保留最近30条，支持修改数值)</h2>
-        <table class="hist-list">
+        <h2>历史记录 (保留最近30条)</h2>
+        <div class="history-table-container"> <table class="hist-list">
             <thead><tr><th>记录时间</th><th>玩家名称</th><th>总评分</th><th>基础实力分(P)</th><th>综合深度分(G)</th><th>操作</th></tr></thead>
             <tbody id="hist-body"></tbody>
-        </table>
+        </table></div>
     </div>
 </div>
 
@@ -221,7 +253,6 @@
     let historyData = [];
     let myChart = null;
 
-    // --- 曲线图数学映射逻辑 ---
     const mapY = (v) => {
         v = parseFloat(v);
         if (v <= 20) return (v / 20) * 10; 
@@ -241,10 +272,44 @@
             historyData = data.history || [];
             document.getElementById('p-name').value = data.playerName || "";
             document.getElementById('p-color').value = data.playerColor || "#444444";
+            
+            // 恢复 G 分数输入框的数据
+            if(data.gScores) {
+                document.getElementById('g-ex-fc').value = data.gScores.exFc || 0;
+                document.getElementById('g-ex-ap').value = data.gScores.exAp || 0;
+                document.getElementById('g-hd-fc').value = data.gScores.hdFc || 0;
+                document.getElementById('g-hd-ap').value = data.gScores.hdAp || 0;
+                document.getElementById('g-nm-fc').value = data.gScores.nmFc || 0;
+                document.getElementById('g-nm-ap').value = data.gScores.nmAp || 0;
+                document.getElementById('g-es-fc').value = data.gScores.esFc || 0;
+                document.getElementById('g-es-ap').value = data.gScores.esAp || 0;
+            }
+
             renderB30();
             renderHistory();
             if(historyData.length > 0) updateChart();
         }
+    }
+
+    function autoSave() {
+        const gScores = {
+            exFc: document.getElementById('g-ex-fc').value,
+            exAp: document.getElementById('g-ex-ap').value,
+            hdFc: document.getElementById('g-hd-fc').value,
+            hdAp: document.getElementById('g-hd-ap').value,
+            nmFc: document.getElementById('g-nm-fc').value,
+            nmAp: document.getElementById('g-nm-ap').value,
+            esFc: document.getElementById('g-es-fc').value,
+            esAp: document.getElementById('g-es-ap').value
+        };
+
+        localStorage.setItem('brating_v27_3_data', JSON.stringify({
+            playerName: document.getElementById('p-name').value,
+            playerColor: document.getElementById('p-color').value,
+            b30: b30, 
+            history: historyData,
+            gScores: gScores
+        }));
     }
 
     function toggleAutoSave() {
@@ -263,7 +328,6 @@
         renderB30();
         autoSave();
     }
-
 
     function renderB30() {
         const container = document.getElementById('b30-list');
@@ -313,7 +377,7 @@
         document.getElementById('out-rank').innerText = "获得称号：" + rankInfo.text;
         document.getElementById('out-rank').style.background = rankInfo.bg;
         document.getElementById('out-rank').style.color = rankInfo.color;
-        document.getElementById('out-breakdown').innerText = `Power: ${p.toFixed(2)} | Grade: ${g.toFixed(3)}`;
+        document.getElementById('out-breakdown').innerText = `基础实力分: ${p.toFixed(2)} | 综合深度分: ${g.toFixed(3)}`;
         document.getElementById('btn-save').style.display = "block";
     }
 
@@ -380,7 +444,7 @@
         body.innerHTML = historyData.map((h, i) => `
             <tr>
                 <td>${h.time}</td><td>${h.name}</td>
-                <td style="font-weight:bold; color:var(--primary)" id="hist-total-${i}">${h.total}</td>
+                <td style="font-weight:bold; color:var(--primary)">${h.total}</td>
                 <td class="editable-cell" contenteditable="true" onblur="editHist(${i}, 'p', this.innerText)">${h.p}</td>
                 <td class="editable-cell" contenteditable="true" onblur="editHist(${i}, 'g', this.innerText)">${h.g}</td>
                 <td><button onclick="delHist(${i})" style="color:red; border:none; background:none; cursor:pointer;">删除</button></td>
@@ -415,14 +479,6 @@
         document.getElementById('bg-img').style.transform = `scale(${s}) translate(${x}px, ${y}px)`;
     }
 
-    function autoSave() {
-        localStorage.setItem('brating_v27_3_data', JSON.stringify({
-            playerName: document.getElementById('p-name').value,
-            playerColor: document.getElementById('p-color').value,
-            b30: b30, history: historyData
-        }));
-    }
-
     function resetLocalStorage() {
         if(confirm("⚠️ 确定要重置所有本地存储数据吗？这将清除所有成绩和历史记录且不可恢复！")) {
             localStorage.removeItem('brating_v27_3_data');
@@ -432,7 +488,6 @@
 
     function clearB30() { if(confirm("确定清空当前的录入的B30数据吗？")) { b30 = []; renderB30(); autoSave(); } }
 
-    // --- 统一文件名生成逻辑 ---
     function generateFileName(extension) {
         const name = document.getElementById('p-name').value || "Unknown";
         const score = document.getElementById('out-total').innerText || "0.00";
@@ -471,7 +526,7 @@
             const reader = new FileReader();
             reader.onload = ev => { 
                 try {
-                    JSON.parse(ev.target.result); // 校验格式
+                    JSON.parse(ev.target.result);
                     localStorage.setItem('brating_v27_3_data', ev.target.result); 
                     location.reload(); 
                 } catch(e) { alert("导入失败：无效的JSON文件"); }
@@ -482,7 +537,7 @@
     }
 </script>
 <div class="author-footer">
-    Designed by <a href="https://space.bilibili.com/471454900?spm_id_from=333.1007.0.0" target="_blank" rel="noopener noreferrer"style="color: inherit; text-decoration: none; border-bottom: 1px dashed;">Suiyuan</a>
+    Designed by <a href="https://space.bilibili.com/471454900" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; border-bottom: 1px dashed;">Suiyuan</a>
 </div>
 </body>
 </html>
