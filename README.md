@@ -1,6 +1,6 @@
 # B-Rating 综合评分计算器
 
-![Version](https://img.shields.io/badge/Version-27.3-ff2d55) ![License](https://img.shields.io/badge/License-MIT-green) ![Platform](https://img.shields.io/badge/Platform-Web-blue)
+![Version](https://img.shields.io/badge/Version-2.1-ff2d55) ![License](https://img.shields.io/badge/License-MIT-green) ![Platform](https://img.shields.io/badge/Platform-Web-blue)
 
 **B-Rating** 是一款专为音乐游戏《BanG Dream!少女乐团派对》玩家设计的综合实力评分工具。不同于传统的单一等级计算，它引入了**基础实力 (P)** 与 **综合深度 (G)** 的双维度评价体系，旨在更客观地反映玩家的真实水平与游戏完成度。
 
