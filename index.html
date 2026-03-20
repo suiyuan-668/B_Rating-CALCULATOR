@@ -35,10 +35,19 @@
         .full-width { grid-column: 1 / span 2; }
 
         header { text-align: center; color: white; margin-bottom: 30px; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        
+        /* 机制介绍容器优化 */
         .logic-intro { 
             background: var(--glass); backdrop-filter: blur(10px); border-radius: 15px; 
-            padding: 20px; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 20px; font-size: 13px; line-height: 1.6;
-            color: white;
+            padding: 20px; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 20px; font-size: 13px; line-height: 1.7;
+            color: white; text-align: left;
+        }
+        .logic-intro h3 { margin: 15px 0 10px; font-size: 16px; }
+        .formula-container { margin: 15px 0; padding: 10px; background: rgba(0,0,0,0.1); border-radius: 10px; }
+        .intro-section { margin-bottom: 12px; }
+        .intro-note { 
+            font-size: 11px; opacity: 0.8; line-height: 1.5; 
+            border-top: 1px dashed rgba(255,255,255,0.2); margin-top: 15px; padding-top: 10px;
         }
 
         .panel { background: var(--card-bg); border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
@@ -124,7 +133,21 @@
 
     .history-pane { -webkit-overflow-scrolling: touch; }
     .hist-list { min-width: 600px; }
-    .logic-intro { font-size: 11px; padding: 12px; word-break: break-all; }
+    
+    /* 修改：机制介绍移动端优化 */
+    .logic-intro { 
+        font-size: 12px; 
+        padding: 15px; 
+        line-height: 1.8; /* 增大行高 */
+        word-break: break-all; 
+    }
+    .logic-intro h3 { font-size: 14px; margin: 10px 0; }
+    .formula-container { 
+        padding: 5px; 
+        overflow-x: auto; /* 公式横向溢出保护 */
+        font-size: 11px; 
+    }
+    .intro-section { margin-bottom: 15px; } /* 增加段落间距 */
 
     .author-footer { position: relative; text-align: center; margin-top: 20px; bottom: 0; right: 0; }
 }
@@ -140,24 +163,32 @@
 <header class="full-width">
     <h1>B-RATING 综合评分计算器</h1>
     <div class="logic-intro">
-        <strong>总评分计算逻辑：</strong> Total Rating（总分） = P(基础实力分) + G(综合深度分)，总分上限为31.0<br>
-<h3 style="text-align: center;">核心公式：</h3>
-    <p>
-        $$Total\ Rating = \text{Min} \left( \frac{\sum \text{Best 30 Scores}}{30} + \frac{pt}{pt + 2500}, \ 31.0 \right)$$
-    </p>
-<p align="left">1. 基础实力的量化 (P)<br>
-• 计算：取你表现最好的30场成绩（与歌曲等级和判定系数挂钩），计算其算术平均值。<br>
-• 系数：AP (1.04)、FC (1.01)、Clear (0.90)。<br>
-• 作用：决定了你评分的"大区段"（例如26分段或28分段）。<br>
-2. 综合深度的补强 (G)<br>
-• 点数化 (pt)：统计全难度的 FC 和 AP 数量：EXPERT/SPECIAL(3+3pt), Hard(1+1pt), Normal(0.5+0.5pt), Easy(0.2+0.2pt)
-<br>
-• 非线性增长：引入收益递减公式，防止G分喧宾夺主。<br>
-• 作用：在你的实力基础上进行"精修"，反映出你对游戏内容的完成度。<br>
-<br>
-<p align="right">注：该评分机制非官方，仅代表个人拙见，受社区玩家见解区别、歌曲具体定级多样性等因素影响，故无法完全准确代表一个玩家的实力水平（也不一定等于底力水平），如有疑惑或发现bug请点击网页下方链接咨询作者<br>
-且本网站所有数据只会存储在您的设备端，清除浏览器缓存时有可能导致历史数据丢失，如需长期保存记录或跨设备转移使用请定期导出数据备份</p>
-</p>
+        <div class="intro-section">
+            <strong>总评分计算逻辑：</strong> 总分 = P(基础实力分) + G(综合深度分)，总分上限为31.0
+        </div>
+        
+        <h3 style="text-align: center;">核心公式</h3>
+        <div class="formula-container">
+            $$Total\ Rating = \text{Min} \left( \frac{\sum \text{Best 30 Scores}}{30} + \frac{pt}{pt + 2500}, \ 31.0 \right)$$
+        </div>
+
+        <div class="intro-section">
+            <strong>1. 基础实力的量化 (P)</strong><br>
+            • 计算：取表现最好的30场成绩（歌曲等级 × 判定系数）的算术平均值。<br>
+            • 系数：AP (1.04)、FC (1.01)、Clear (0.90)。<br>
+            • 作用：决定评分的"大区段"（如26或28分段）。
+        </div>
+
+        <div class="intro-section">
+            <strong>2. 综合深度的补强 (G)</strong><br>
+            • 点数化 (pt)：统计全难度 FC 和 AP：EX/SP(3+3pt), Hard(1+1pt), Normal(0.5+0.5pt), Easy(0.2+0.2pt)<br>
+            • 非线性增长：引入收益递减公式，防止G分喧宾夺主。<br>
+            • 作用：在实力基础上进行"精修"，反映游戏内容的完成度。
+        </div>
+        
+        <div class="intro-note">
+            注：该机制非官方，受玩家见解差、歌曲定级多样性等因素影响，无法完全准确代表玩家实力。数据仅存储于本地设备，清除缓存可能导致数据丢失，请定期导出备份。
+        </div>
     </div>
 </header>
 
@@ -273,7 +304,6 @@
             document.getElementById('p-name').value = data.playerName || "";
             document.getElementById('p-color').value = data.playerColor || "#444444";
             
-            // 恢复 G 分数输入框的数据
             if(data.gScores) {
                 document.getElementById('g-ex-fc').value = data.gScores.exFc || 0;
                 document.getElementById('g-ex-ap').value = data.gScores.exAp || 0;
