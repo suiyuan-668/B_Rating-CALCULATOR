@@ -70,4 +70,3 @@ $$Total\ Rating = \text{Min} \left( \frac{\sum \text{Best 30 Scores}}{30} + \fra
 > * **作者**：Designed by [Suiyuan](https://space.bilibili.com/471454900)。
 > * **附言**：感谢参与了测试的网友们，并感谢你们提供的宝贵意见，如有不完善的地方还请大家多多包涵，祝大家游戏愉快！
 > * **“Google Gemini AI 对本项目起到一定辅助作用”**
-> 
