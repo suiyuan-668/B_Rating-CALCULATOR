@@ -107,7 +107,7 @@
 .author-footer a:hover {
     color: #ff4d4f;
 }
-/* --- 移动端响应式优化 --- */
+/* 2.1修改--- 移动端响应式优化 --- */
 @media (max-width: 768px) {
     body { padding: 10px; }
     .container { display: flex; flex-direction: column; width: 100% !important; gap: 15px; }
@@ -134,7 +134,7 @@
     .history-pane { -webkit-overflow-scrolling: touch; }
     .hist-list { min-width: 600px; }
     
-    /* 修改：机制介绍移动端优化 */
+    /* 2.1修改：机制介绍移动端优化 */
     .logic-intro { 
         font-size: 12px; 
         padding: 15px; 
@@ -151,6 +151,7 @@
 
     .author-footer { position: relative; text-align: center; margin-top: 20px; bottom: 0; right: 0; }
 }
+
     </style>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
@@ -216,9 +217,9 @@
             <div class="row">
                 <input type="number" id="in-lv" placeholder="等级" style="flex:0.5">
                 <select id="in-type">
-                    <option value="1.04">ALL PERFECT (1.04)</option>
-                    <option value="1.01">FULL COMBO (1.01)</option>
-                    <option value="0.90">CLEAR (0.90)</option>
+                    <option value="1.04">ALL PERFECT 全完美 (1.04)</option>
+                    <option value="1.01">FULL COMBO 全连击 (1.01)</option>
+                    <option value="0.90">CLEAR 仅完成 (0.90)</option>
                 </select>
                 <input type="number" id="in-qty" value="1" style="flex:0.3">
                 <button class="btn btn-add" onclick="addSongs()">添加</button>
@@ -230,8 +231,8 @@
         <section class="input-group">
             <h2>3.综合深度分(G) 计算</h2>
             <table style="width:100%; font-size:12px; text-align: left;">
-                <tr><th>难度</th><th>FC总数(含AP)</th><th>其中AP数</th></tr>
-                <tr><td>EXPERT/SP</td><td><input type="number" id="g-ex-fc" value="0" oninput="autoSave()"></td><td><input type="number" id="g-ex-ap" value="0" oninput="autoSave()"></td></tr>
+                <tr><th>难度</th><th>全连击（FC）乐曲数</th><th>ALL PERFECT（AP）乐曲数</th></tr>
+                <tr><td>EXPERT/SPECIAL</td><td><input type="number" id="g-ex-fc" value="0" oninput="autoSave()"></td><td><input type="number" id="g-ex-ap" value="0" oninput="autoSave()"></td></tr>
                 <tr><td>HARD</td><td><input type="number" id="g-hd-fc" value="0" oninput="autoSave()"></td><td><input type="number" id="g-hd-ap" value="0" oninput="autoSave()"></td></tr>
                 <tr><td>NORMAL</td><td><input type="number" id="g-nm-fc" value="0" oninput="autoSave()"></td><td><input type="number" id="g-nm-ap" value="0" oninput="autoSave()"></td></tr>
                 <tr><td>EASY</td><td><input type="number" id="g-es-fc" value="0" oninput="autoSave()"></td><td><input type="number" id="g-es-ap" value="0" oninput="autoSave()"></td></tr>
