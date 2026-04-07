@@ -107,7 +107,7 @@
 .author-footer a:hover {
     color: #ff4d4f;
 }
-/* 2.1修改--- 移动端响应式优化 --- */
+/* --- 移动端响应式优化 --- */
 @media (max-width: 768px) {
     body { padding: 10px; }
     .container { display: flex; flex-direction: column; width: 100% !important; gap: 15px; }
@@ -134,20 +134,19 @@
     .history-pane { -webkit-overflow-scrolling: touch; }
     .hist-list { min-width: 600px; }
     
-    /* 2.1修改：机制介绍移动端优化 */
     .logic-intro { 
         font-size: 12px; 
         padding: 15px; 
-        line-height: 1.8; /* 增大行高 */
+        line-height: 1.8; 
         word-break: break-all; 
     }
     .logic-intro h3 { font-size: 14px; margin: 10px 0; }
     .formula-container { 
         padding: 5px; 
-        overflow-x: auto; /* 公式横向溢出保护 */
+        overflow-x: auto; 
         font-size: 11px; 
     }
-    .intro-section { margin-bottom: 15px; } /* 增加段落间距 */
+    .intro-section { margin-bottom: 15px; }
 
     .author-footer { position: relative; text-align: center; margin-top: 20px; bottom: 0; right: 0; }
 }
@@ -370,7 +369,9 @@
         const name = document.getElementById('p-name').value || "User";
         const nameColor = document.getElementById('p-color').value;
         const top30 = b30.slice(0, 30);
-        let pBase = top30.length > 0 ? (top30.reduce((acc, cur) => acc + cur.score, 0) / Math.min(top30.length, 30)) : 0;
+        
+        // 修复基础分逻辑问题
+        let pBase = (top30.reduce((acc, cur) => acc + cur.score, 0) / 30);
         pBase = Math.min(pBase, 31.0);
 
         const pt = (parseInt(document.getElementById('g-ex-fc').value)||0)*3 + (parseInt(document.getElementById('g-ex-ap').value)||0)*3 +
@@ -472,6 +473,7 @@
 
     function renderHistory() {
         const body = document.getElementById('hist-body');
+        // 修复历史记录删除不一致问题
         body.innerHTML = historyData.map((h, i) => `
             <tr>
                 <td>${h.time}</td><td>${h.name}</td>
@@ -492,7 +494,8 @@
     }
 
     function delHist(i) {
-        historyData.splice(historyData.length - 1 - i, 1);
+        // 直接删除对应索引的数据
+        historyData.splice(i, 1);
         renderHistory(); updateChart(); autoSave();
     }
 
